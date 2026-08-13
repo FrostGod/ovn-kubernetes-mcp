@@ -31,16 +31,6 @@ func UnmarshalCallToolResult[T any](output []byte) T {
 	return resultInTFormat
 }
 
-// ExecuteToolCall runs a tool call and returns the output. It tolerates a non-nil
-// error from Execute() as long as stdout was captured — the MCP inspector CLI exits
-// non-zero when a tool returns isError:true, but stdout still contains the JSON response.
-func ExecuteToolCall(mcpInspector *inspector.MCPInspector, toolName string, toolArgs map[string]any) []byte {
-	output, err := mcpInspector.MethodCall(toolName, toolArgs).Execute()
-	gomega.Expect(output).NotTo(gomega.BeEmpty(),
-		"inspector exited with error but produced no output: %v", err)
-	return output
-}
-
 func ExpectToolError(mcpInspector *inspector.MCPInspector, toolName string, toolArgs map[string]any, wantError string) {
 	output, err := mcpInspector.
 		MethodCall(toolName, toolArgs).
