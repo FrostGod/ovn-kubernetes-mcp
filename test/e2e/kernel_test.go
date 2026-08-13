@@ -110,10 +110,9 @@ var _ = Describe("Kernel Tools", func() {
 		It("should retrieve IP routing information from a node", func() {
 			By("Running get-ip to show routes")
 			output, err := mcpInspector.
-				MethodCall(getIPToolName, map[string]any{
-					"node":    nodeName,
+				MethodCall(getIPToolName, withNode(map[string]any{
 					"command": "route show",
-				}).Execute()
+				})).Execute()
 			Expect(err).NotTo(HaveOccurred())
 			Expect(output).NotTo(BeEmpty())
 
@@ -130,10 +129,9 @@ var _ = Describe("Kernel Tools", func() {
 		It("should retrieve network interface information from a node", func() {
 			By("Running get-ip to show links")
 			output, err := mcpInspector.
-				MethodCall(getIPToolName, map[string]any{
-					"node":    nodeName,
+				MethodCall(getIPToolName, withNode(map[string]any{
 					"command": "link show",
-				}).Execute()
+				})).Execute()
 			Expect(err).NotTo(HaveOccurred())
 			Expect(output).NotTo(BeEmpty())
 
@@ -153,11 +151,10 @@ var _ = Describe("Kernel Tools", func() {
 		It("should retrieve iptables rules from a node", func() {
 			By("Running get-iptables to list filter table rules")
 			output, err := mcpInspector.
-				MethodCall(getIPTablesToolName, map[string]any{
-					"node":    nodeName,
+				MethodCall(getIPTablesToolName, withNode(map[string]any{
 					"table":   "filter",
 					"command": "-L",
-				}).Execute()
+				})).Execute()
 			Expect(err).NotTo(HaveOccurred())
 			Expect(output).NotTo(BeEmpty())
 
@@ -175,11 +172,10 @@ var _ = Describe("Kernel Tools", func() {
 		It("should retrieve NAT table rules from a node", func() {
 			By("Running get-iptables to list nat table rules")
 			output, err := mcpInspector.
-				MethodCall(getIPTablesToolName, map[string]any{
-					"node":    nodeName,
+				MethodCall(getIPTablesToolName, withNode(map[string]any{
 					"table":   "nat",
 					"command": "-L",
-				}).Execute()
+				})).Execute()
 			Expect(err).NotTo(HaveOccurred())
 			Expect(output).NotTo(BeEmpty())
 
@@ -199,10 +195,9 @@ var _ = Describe("Kernel Tools", func() {
 		It("should retrieve nftables ruleset from a node", func() {
 			By("Running get-nft to list tables")
 			output, err := mcpInspector.
-				MethodCall(getNFTToolName, map[string]any{
-					"node":    nodeName,
+				MethodCall(getNFTToolName, withNode(map[string]any{
 					"command": "list tables",
-				}).Execute()
+				})).Execute()
 			Expect(err).NotTo(HaveOccurred())
 			Expect(output).NotTo(BeEmpty())
 
@@ -270,10 +265,9 @@ var _ = Describe("Kernel Tools", func() {
 		It("should retrieve connection tracking list from a node", func() {
 			By("Running get-conntrack to list connections")
 			output, err := mcpInspector.
-				MethodCall(getConntrackToolName, map[string]any{
-					"node":    nodeName,
+				MethodCall(getConntrackToolName, withNode(map[string]any{
 					"command": "-L",
-				}).Execute()
+				})).Execute()
 			Expect(err).NotTo(HaveOccurred())
 			Expect(output).NotTo(BeEmpty())
 
@@ -310,10 +304,9 @@ var _ = Describe("Kernel Tools", func() {
 		It("should retrieve connection tracking count from a node", func() {
 			By("Running get-conntrack to count connections")
 			output, err := mcpInspector.
-				MethodCall(getConntrackToolName, map[string]any{
-					"node":    nodeName,
+				MethodCall(getConntrackToolName, withNode(map[string]any{
 					"command": "-C",
-				}).Execute()
+				})).Execute()
 			Expect(err).NotTo(HaveOccurred())
 			Expect(output).NotTo(BeEmpty())
 
@@ -327,10 +320,9 @@ var _ = Describe("Kernel Tools", func() {
 		It("should retrieve connection tracking statistics from a node", func() {
 			By("Running get-conntrack to show statistics")
 			output, err := mcpInspector.
-				MethodCall(getConntrackToolName, map[string]any{
-					"node":    nodeName,
+				MethodCall(getConntrackToolName, withNode(map[string]any{
 					"command": "-S",
-				}).Execute()
+				})).Execute()
 			Expect(err).NotTo(HaveOccurred())
 			Expect(output).NotTo(BeEmpty())
 
