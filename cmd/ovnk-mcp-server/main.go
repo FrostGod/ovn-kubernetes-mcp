@@ -40,6 +40,7 @@ type MCPServerConfig struct {
 	Kubernetes    kubernetesmcp.Config
 	ToolTimeout   time.Duration
 	DisabledTools map[string]bool
+	Stateless     bool
 }
 
 // setupLiveCluster sets up the live cluster mode.
@@ -162,9 +163,12 @@ func main() {
 			log.Printf("Server failed: %v", err)
 		}
 	case "http":
+		// Stateless because proxies and extra replicas serve requests on
+		// transports that never saw the matching Mcp-Session-Id.
 		handler := mcp.NewStreamableHTTPHandler(func(*http.Request) *mcp.Server {
 			return ovnkMcpServer
-		}, nil)
+		}, &mcp.StreamableHTTPOptions{Stateless: serverCfg.Stateless})
+		log.Printf("HTTP transport stateless mode: %v", serverCfg.Stateless)
 		addr := net.JoinHostPort(serverCfg.Host, serverCfg.Port)
 		log.Printf("Listening on %s", addr)
 		server = &http.Server{
@@ -195,6 +199,8 @@ func parseFlags() *MCPServerConfig {
 	flag.StringVar(&cfg.Transport, "transport", "stdio", "Transport to use: stdio or http")
 	flag.StringVar(&cfg.Host, "host", "localhost", "Host to bind to (use 0.0.0.0 for container/cluster)")
 	flag.StringVar(&cfg.Port, "port", "8080", "Port to use")
+	flag.BoolVar(&cfg.Stateless, "stateless", true,
+		"For http transport, skip Mcp-Session-Id validation. Disable only for clients needing SSE (GET)")
 	flag.StringVar(&cfg.Kubernetes.Kubeconfig, "kubeconfig", "", "Path to the kubeconfig file")
 	flag.StringVar(&cfg.NetworkTools.PwruImage, "pwru-image", "docker.io/cilium/pwru:v1.0.10", "Container image for pwru operations")
 	flag.StringVar(&cfg.NetworkTools.TcpdumpImage, "tcpdump-image", defaultNetshootImage, "Container image for tcpdump operations")
